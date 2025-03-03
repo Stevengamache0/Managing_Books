@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('partials/head.ejs') %>
+
+  <body>
+    <div class="fluid-container">
+      <header>
+        <%- include('partials/nav.ejs') %>
+      </header>
+
+      <main>
+        <% if (books.length == 0) { %>
+          <div class="container mt-3 p-3">
+            <h1>No books found. <a href="/books/add">Add a new book</a></h1>
+          </div>
+          <% } else { %>
+            <div class="container mt-3 p-3">
+              <div class="row">
+                <% books.forEach(function(book) { %>
+                  <div class="col-sm-4">
+                    <div class="card">
+                      <img class="card-img-top" src="<%= book.image %>" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title"><%= book.title %></h5>
+                        <p class="card-text"><%= book.description %></p>
+                        <a href="/books/edit/<%= book.id %>" class="btn btn-primary">Edit</a>
+                        <button class="btn btn-danger" onclick="deleteBook('<%= book.id %>');">Delete</button>
+                      </div>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+            </div>
+          <% } %>
+      </main>
+    </div>
+    <script>
+      let deleteBook = (id) => {
+        if (!confirm("Are you sure you want to delete this book?")) {
+          return;
+        }
+        fetch(`/books/delete/${id}`, {
+          method: 'DELETE'
+        }).then(response => {
+          if (response.ok) {
+            location.reload();
+          }
+        }).catch(err => console.log(err));
+      }
+    </script>
+  </body>
+
+</html>
