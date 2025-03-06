@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('partials/head.ejs') %>
+
+    <body class="bg-secondary">
+        <div class="fluid-container">
+            <header>
+                <%- include('partials/nav.ejs') %>
+            </header>
+
+            <main>
+                <div class="container mt-3 p-3 bg-light">
+                    <form class="p-3 mt-4">
+                        <label for="" class="form-label mt-3">Title</label>
+                        <input type="text" class="form-control" placeholder="Title" name="title">
+                        <label for="" class="form-label mt-3">Author</label>
+                        <input type="text" class="form-control" placeholder="Author" name="author">
+                        <label for="" class="form-label mt-3">Image</label>
+                        <input type="text" class="form-control" placeholder="Image" name="image">
+                        <label for="" class="form-label mt-3">Description</label>
+                        <input type="text" class="form-control" placeholder="Description" name="description">
+                        <input type="submit" class="btn btn-primary mt-3" value="Add Book" onclick="addBook(event)">
+                    </form>
+                </div>
+            </main>
+        </div>
+        <script>
+            let addBook = (e) => {
+                e.preventDefault();
+                const form = document.querySelector('form');
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    form.reportValidity();
+                    return;
+                }
+                let formData = {
+                    id: Math.floor(Math.random() * 100),
+                    title: document.querySelector('input[name="title"]').value,
+                    author: document.querySelector('input[name="author"]').value,
+                    image: document.querySelector('input[name="image"]').value,
+                    description: document.querySelector('input[name="description"]').value
+                };
+                fetch('/books/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                }).then(res => {
+                    if (res.status === 200) {
+                        alert('Saved!');
+                        form.classList.remove('was-validated');
+                        form.reset();
+                    }
+                }).catch(err => console.log(err));
+            }
+        </script>
+    </body>
+
+</html>
